@@ -10,10 +10,10 @@ bp = Blueprint('article', __name__, url_prefix='/article')
 
 
 def get_article(id):
-    article = get_db().excute(
+    article = get_db().execute(
         'SELECT p.id, title, body, created, author_id, username'
-        'FROM post p JOIN user u ON p.id = u.id'
-        'WHERE p.id = ?',
+        ' FROM post p JOIN user u ON p.author_id = u.id'
+        ' WHERE p.id = ?',
         (id,)
     ).fetchone()
 
@@ -23,8 +23,8 @@ def get_article(id):
     return article
 
 
-@bp.route('/article/<int:id>')
+@bp.route('/<int:id>')
 def page(id):
     article = get_article(id)
     
-    render_template('article.html', article=article)
+    return render_template('blog/article_page.html', article=article)
