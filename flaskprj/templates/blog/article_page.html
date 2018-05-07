@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Article "{{ article['title'] }}"{% endblock %}</h1>
+  <!-- <h1>{% block title %}Article "{{ article['title'] }}"{% endblock %}</h1> -->
+  <h1>{{ article['title'] }}</h1>
 {% endblock %}
 
 {% block content %}
 <article class="post">
     <header>
       <div>
-        <h1>{{ article['title'] }}</h1>
+        <!-- <h1>{{ article['title'] }}</h1> -->
         <div class="about">by {{ article['username'] }} on {{ article['created'].strftime('%Y-%m-%d') }}</div>
       </div>
       {% if g.user['id'] == article['author_id'] %}
@@ -16,5 +17,10 @@
       {% endif %}
     </header>
     <p>{{ article['body'] }}</p>
+    {% if article['modified'] %}
+    <div>
+      <div class="about">modified by {{ article['username'] }} on {{ article['modify_time'].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+    </div>
+    {% endif %}
 </article>
 {% endblock %}

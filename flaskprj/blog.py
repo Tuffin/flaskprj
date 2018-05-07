@@ -1,3 +1,4 @@
+import datetime
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -37,9 +38,9 @@ def create():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO post (title, body, author_id)'
-                ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
+                'INSERT INTO post (title, body, author_id, modified)'
+                ' VALUES (?, ?, ?, ?)',
+                (title, body, g.user['id'], 0)
             )
             db.commit()
             return redirect(url_for('blog.index'))
@@ -80,11 +81,13 @@ def update(id):
         if error is not None:
             flash(error)
         else:
+            modify_time = datetime.datetime.now()
+            modified = 1
             db = get_db()
             db.execute(
-                'UPDATE post SET title = ?, body = ?'
+                'UPDATE post SET title = ?, body = ?, modified = ?, modify_time = ?'
                 ' WHERE id = ?',
-                (title, body, id)
+                (title, body, modified, modify_time, id)
             )
             db.commit()
             return redirect(url_for('blog.index'))

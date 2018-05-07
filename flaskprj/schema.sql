@@ -13,5 +13,7 @@ CREATE TABLE post (
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   title TEXT NOT NULL,
   body TEXT NOT NULL,
+  modified INTEGER NOT NULL DEFAULT 0,
+  modify_time TIMESTAMP,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
