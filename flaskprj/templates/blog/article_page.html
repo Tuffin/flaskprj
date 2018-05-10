@@ -2,7 +2,7 @@
 
 {% block header %}
   <!-- <h1>{% block title %}Article "{{ article['title'] }}"{% endblock %}</h1> -->
-  <h1>{{ article['title'] }}</h1>
+  <h1>{{ article.title }}</h1>
 {% endblock %}
 
 {% block content %}
@@ -10,16 +10,16 @@
     <header>
       <div>
         <!-- <h1>{{ article['title'] }}</h1> -->
-        <div class="about">by {{ article['username'] }} on {{ article['created'].strftime('%Y-%m-%d') }}</div>
+        <div class="about">by {{ article.username }} on {{ article.created.strftime('%Y-%m-%d') }}</div>
       </div>
-      {% if g.user['id'] == article['author_id'] %}
-        <a class="action" href="{{ url_for('blog.update', id=article['id']) }}">Edit</a>
+      {% if g.user.id == article.author_id %}
+        <a class="action" href="{{ url_for('blog.update', id=article.id) }}">Edit</a>
       {% endif %}
     </header>
-    <p>{{ article['body'] }}</p>
-    {% if article['modified'] %}
+    <p>{{ article.body }}</p>
+    {% if article.modified %}
     <div>
-      <div class="about">modified by {{ article['username'] }} on {{ article['modify_time'].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+      <div class="about">modified by {{ article.username }} on {{ article.modify_time.strftime('%Y-%m-%d %H:%M:%S') }}</div>
     </div>
     {% endif %}
 </article>
