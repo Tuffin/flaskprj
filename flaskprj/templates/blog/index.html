@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import 'blog/_macros.html' as macros %}
 
 {% block header %}
   <h1>{% block title %}Posts{% endblock %}</h1>
@@ -26,4 +27,9 @@
       <hr>
     {% endif %}
   {% endfor %}
+  {% if pagination %}
+  <div class="pagination">
+      {{ macros.pagination_widget(pagination, 'blog.index') }}
+  </div>
+  {% endif %}
 {% endblock %}

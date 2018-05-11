@@ -1,6 +1,6 @@
 import datetime
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
 from werkzeug.exceptions import abort
 from flaskprj.models import db, Post, User
@@ -12,8 +12,13 @@ bp = Blueprint('blog', __name__)
 @bp.route('/')
 @bp.route('/index')
 def index():
-    posts = db.session.query(Post).order_by(Post.created.desc()).all()
-    return render_template('blog/index.html', posts=posts)
+    page = request.args.get('page', 1, type=int)
+    pagination = db.session.query(Post).order_by(Post.created.desc()).paginate(
+        page, per_page=current_app.config['FLASKPRJ_POST_PER_PAGE'], error_out=False
+    )
+    # posts = db.session.query(Post).order_by(Post.created.desc()).all()
+    posts = pagination.items
+    return render_template('blog/index.html', posts=posts, pagination=pagination)
 
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -30,7 +35,8 @@ def create():
         if error is not None:
             flash(error)
         else:
-            post = Post(title=title, body=body, author_id=g.user.id, modified=False)
+            post = Post(title=title, body=body, 
+                        author_id=g.user.id, modified=False, created=datetime.datetime.now())
             db.session.add(post)
             db.session.commit()
             return redirect(url_for('blog.index'))

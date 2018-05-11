@@ -22,7 +22,7 @@ class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
+    created = db.Column(db.DateTime, nullable=False)
     title = db.Column(db.String(255), nullable=False)
     body = db.Column(db.Text)
     modified = db.Column(db.Boolean, nullable=False, default=False)

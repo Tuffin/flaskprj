@@ -5,7 +5,6 @@ from flask import (
 from flaskprj.models import User, Post, db
 from werkzeug.exceptions import abort
 from flaskprj.auth import login_required
-from sqlalchemy import and_
 
 bp = Blueprint('article', __name__, url_prefix='/article')
 
