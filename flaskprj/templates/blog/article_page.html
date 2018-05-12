@@ -13,7 +13,7 @@
         <div class="about">by {{ article.username }} on {{ article.created.strftime('%Y-%m-%d') }}</div>
       </div>
       {% if g.user.id == article.author_id %}
-        <a class="action" href="{{ url_for('blog.update', id=article.id) }}">Edit</a>
+        <a class="action" href="{{ url_for('main.update', id=article.id) }}">Edit</a>
       {% endif %}
     </header>
     <p>{{ article.body }}</p>

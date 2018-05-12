@@ -28,20 +28,21 @@ def create_app(config_name='development', test_config=None):
     except OSError:
         pass
 
-    # @app.teardown_appcontext
-    # def shutdown_session(exception=None):
-    #     db_session.remove()
-    # from . import db_create
-    # db_create.init_db()
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
 
-    from . import auth
-    app.register_blueprint(auth.bp)
-
-    from . import blog
-    app.register_blueprint(blog.bp)
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint)
     app.add_url_rule('/', endpoint='index')
 
-    from . import article
-    app.register_blueprint(article.bp)
+    # from . import auth
+    # app.register_blueprint(auth.bp)
+
+    # from . import blog
+    # app.register_blueprint(blog.bp)
+    # app.add_url_rule('/', endpoint='index')
+
+    # from . import article
+    # app.register_blueprint(article.bp)
 
     return app

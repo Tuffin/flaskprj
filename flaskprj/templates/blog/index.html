@@ -4,7 +4,7 @@
 {% block header %}
   <h1>{% block title %}Posts{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('blog.create') }}">New</a>
+    <a class="action" href="{{ url_for('main.create') }}">New</a>
   {% endif %}
 {% endblock %}
 
@@ -13,11 +13,11 @@
     <article class="post">
       <header>
         <div>
-          <a class="action" href="{{ url_for('article.page', id=post.id) }}">{{ post.title }}</a>
+          <a class="action" href="{{ url_for('main.page', id=post.id) }}">{{ post.title }}</a>
           <div class="about">Created on {{ post.created.strftime('%Y-%m-%d') }}</div>
         </div>
         {% if g.user.id == post.author_id %}
-          <a class="action" href="{{ url_for('blog.update', id=post.id) }}">Edit</a>
+          <a class="action" href="{{ url_for('main.update', id=post.id) }}">Edit</a>
         {% endif %}
       </header>
       <p class="body">{{ post.body }}</p>
@@ -28,7 +28,7 @@
   {% endfor %}
   {% if pagination %}
   <div class="pagination">
-      {{ macros.pagination_widget(pagination, 'blog.index') }}
+      {{ macros.pagination_widget(pagination, 'main.index') }}
   </div>
   {% endif %}
 {% endblock %}
