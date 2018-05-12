@@ -9,6 +9,7 @@ class Config(object):
     FLASKPRJ_POST_PER_PAGE = 2
     SSL_REDIRECT = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
     @staticmethod
     def init_app(app):
