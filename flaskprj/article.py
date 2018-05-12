@@ -4,7 +4,6 @@ from flask import (
 
 from flaskprj.models import User, Post, db
 from werkzeug.exceptions import abort
-from flaskprj.auth import login_required
 
 bp = Blueprint('article', __name__, url_prefix='/article')
 
