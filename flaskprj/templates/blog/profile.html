@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+
+{% block header %}
+  <h1>Profile</h1>
+{% endblock %}
+
+{% block content %}
+<article class="post">
+    <header>
+        <div></div>
+      {% if g.user.id and g.user.id == current_user.id %}
+        <a class="action" href="{{ url_for('main.profile_edit', username=current_user.username) }}">Edit</a>
+      {% endif %}
+    </header>
+    {% if profile.Profile %}
+        <p>{{ profile.Profile.body }}</p>
+    {% else %}
+        <p>No profile now</p>
+    {% endif %}
+</article>
+{% endblock %}

@@ -51,3 +51,16 @@ class Post(db.Model):
     
     def __repr__(self):
         return '<Post %s>' % self.title
+
+
+class Profile(db.Model):
+    __tablename__ = 'profile'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    body = db.Column(db.Text)
+
+    def __init__(self, **kwargs):
+        super(Profile, self).__init__(**kwargs)
+    
+    def __repr__(self):
+        return '<Profile %s>' % self.title

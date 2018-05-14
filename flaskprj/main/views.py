@@ -3,12 +3,14 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
+from sqlalchemy import and_
+from flask_login import current_user
 from werkzeug.exceptions import abort
 from flask_login import login_required
 
 from . import main
-from .forms import CreateForm, UpdateForm
-from ..models import db, Post, User
+from .forms import CreateForm, UpdateForm, ProfileEditForm
+from ..models import db, Post, User, Profile
 
 @main.route('/')
 @main.route('/index')
@@ -62,7 +64,7 @@ def update(id):
         post.modify_time = modify_time
         db.session.commit()
         return redirect(url_for('main.index'))
-        
+
     form.title.data = post.title
     form.body.data = post.body
 
@@ -93,3 +95,33 @@ def page(id):
     article = get_article(id)
     
     return render_template('blog/article_page.html', article=article)
+
+
+@main.route('/profile/<string:username>')
+def profile(username):
+    profile = db.session.query(User, Profile).filter(
+        and_(Profile.author_id==User.id, User.username==username)).first()
+
+    return render_template('blog/profile.html', profile=profile, currnet_user=current_user)
+
+
+@main.route('/profile-edit/<string:username>', methods=['GET', 'POST'])
+def profile_edit(username):
+    user = db.session.query(User).filter(User.username==username).first()
+    profile = db.session.query(Profile).filter(Profile.author_id==user.id).first()
+    form = ProfileEditForm()
+
+    if form.validate_on_submit():
+        if not profile:
+            profile = Profile(author_id=user.id, body=form.body.data)
+            db.session.add(profile)
+        else:
+            profile.body = form.body.data
+        db.session.commit()
+
+        return redirect(url_for('main.profile', username=username))
+    
+    if profile:
+        form.body = profile.Profile.body.data
+
+    return render_template('blog/profile_edit.html', form=form)

@@ -15,3 +15,7 @@ class UpdateForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     body = TextAreaField('Body')
     submit = SubmitField('Save')
+
+class ProfileEditForm(FlaskForm):
+    body = TextAreaField('Body')
+    submit = SubmitField('Submit')
