@@ -16,7 +16,7 @@ sqluri = config['development'].SQLALCHEMY_DATABASE_URI
 sqlmr = config['development'].SQLALCHEMY_MIGRATE_REPO
 
 if not os.path.exists(sqlmr):
-    api.create(sqlmr, 'database repository')
+    api.create(sqlmr, 'database_repository')
     api.version_control(sqluri, sqlmr)
 else:
     api.version_control(sqluri, sqlmr, api.version(sqlmr))

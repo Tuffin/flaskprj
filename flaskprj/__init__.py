@@ -1,9 +1,14 @@
 import os
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 from config import config
 from flask import Flask
 
+bootstrap = Bootstrap()
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
 
 def create_app(config_name='development', test_config=None):
     # create and configure the app
@@ -13,6 +18,9 @@ def create_app(config_name='development', test_config=None):
 
     from flaskprj.models import db
     db.init_app(app)
+
+    bootstrap.init_app(app)
+    login_manager.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -34,15 +42,5 @@ def create_app(config_name='development', test_config=None):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
     app.add_url_rule('/', endpoint='index')
-
-    # from . import auth
-    # app.register_blueprint(auth.bp)
-
-    # from . import blog
-    # app.register_blueprint(blog.bp)
-    # app.add_url_rule('/', endpoint='index')
-
-    # from . import article
-    # app.register_blueprint(article.bp)
 
     return app

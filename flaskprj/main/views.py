@@ -4,9 +4,10 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
 from werkzeug.exceptions import abort
+from flask_login import login_required
 
 from . import main
-from ..auth.views import login_required
+from .forms import CreateForm, UpdateForm
 from ..models import db, Post, User
 
 @main.route('/')
@@ -24,24 +25,15 @@ def index():
 @main.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        error = None
+    form = CreateForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, body=form.body.data, 
+                    author_id=g.user.id, modified=False, created=datetime.datetime.now())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('main.index'))
 
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            post = Post(title=title, body=body, 
-                        author_id=g.user.id, modified=False, created=datetime.datetime.now())
-            db.session.add(post)
-            db.session.commit()
-            return redirect(url_for('main.index'))
-
-    return render_template('blog/create.html')
+    return render_template('blog/create.html', form=form)
 
 
 def get_post(id, check_author=True):
@@ -60,28 +52,21 @@ def get_post(id, check_author=True):
 @login_required
 def update(id):
     post = db.session.query(Post).filter(Post.id == id).one()
+    form = UpdateForm()
 
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        error = None
+    if form.validate_on_submit():
+        modify_time = datetime.datetime.now()
+        post.title = form.title.data
+        post.body = form.body.data
+        post.modified = True
+        post.modify_time = modify_time
+        db.session.commit()
+        return redirect(url_for('main.index'))
+        
+    form.title.data = post.title
+    form.body.data = post.body
 
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            modify_time = datetime.datetime.now()
-            modified = True
-            post.title = title
-            post.body = body
-            post.modified = modified
-            post.modify_time = modify_time
-            db.session.commit()
-            return redirect(url_for('main.index'))
-
-    return render_template('blog/update.html', post=post)
+    return render_template('blog/update.html', post=post, form=form)
 
 
 @main.route('/<int:id>/delete', methods=('POST',))
@@ -103,7 +88,7 @@ def get_article(id):
     return article
 
 
-@main.route('/<int:id>')
+@main.route('/article/<int:id>')
 def page(id):
     article = get_article(id)
     
