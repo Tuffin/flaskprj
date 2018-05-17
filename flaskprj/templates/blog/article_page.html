@@ -10,7 +10,7 @@
     <header>
       <div>
         <!-- <h1>{{ article['title'] }}</h1> -->
-        <div class="about">Created on {{ article.created.strftime('%Y-%m-%d') }}</div>
+        <div class="blog-post-meta">Created on {{ article.created.strftime('%Y-%m-%d') }}</div>
       </div>
       {% if g.user.id == article.author_id %}
         <a class="action" href="{{ url_for('main.update', id=article.id) }}">Edit</a>

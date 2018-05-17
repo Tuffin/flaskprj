@@ -1,27 +1,57 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Flaskprj</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1>
-    <a href="{{ url_for('main.index') }}">Flaskprj</a></h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-      <li><a href="{{ url_for('main.profile', username=g.user['username']) }}">Profile</a></li>
-    {% else %}
-      <li><a href="{{ url_for('main.profile', username='usr1') }}">Profile</a></li>
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-  </ul>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}{% endblock %} - Flaskprj</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+
+  </head>
+  
+  <body>
+    
+    <div class="container">
+      <header class="blog-header py-3">
+        <div class="row flex-nowrap justify-content-between align-items-center">
+          <div class="col-4 pt-1"></div>
+          <div class="col-4 text-center">
+            <a class="blog-header-logo text-dark" href="{{ url_for('main.index') }}">Flaskprj</a>
+          </div>
+          <div class="col-4 d-flex justify-content-end align-items-center">
+          {% if g.user %}
+            <span class="text-muted">{{ g.user['username'] }}</span>
+            <p>&nbsp;&nbsp;</p>
+            <a class="text-muted" href="{{ url_for('main.profile', username=g.user['username']) }}">Profile</a>
+            <p>&nbsp;</p>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('auth.logout') }}">Log Out</a>
+          {% else %}
+            <a class="text-muted" href="{{ url_for('main.profile', username='usr1') }}">Profile</a>
+            <p>&nbsp;</p>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('auth.register') }}">Register</a>
+            <p>&nbsp;</p>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('auth.login') }}">Log In</a>
+          {% endif %}
+          </div>
+        </div>
+      </header>
+      
+      <main role="main" class="container">
+        <!-- <header> -->
+          <div>
+          {% block header %}{% endblock %}
+        </div>
+        <!-- </header> -->
+        {% for message in get_flashed_messages() %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    <script src="../static/js/lib/jquery.min.js"></script>
+    <script src="../static/js/lib/bootstrap.min.js"></script>
+  </body>
+  </html>

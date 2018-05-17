@@ -4,31 +4,35 @@
 {% block header %}
   <h1>{% block title %}Posts{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('main.create') }}">New</a>
+    <a class="action" href="{{ url_for('main.create') }}" style="float: right;">New</a>
   {% endif %}
 {% endblock %}
 
 {% block content %}
-  {% for post in posts %}
-    <article class="post">
-      <header>
-        <div>
-          <a class="action" href="{{ url_for('main.page', id=post.id) }}">{{ post.title }}</a>
-          <div class="about">Created on {{ post.created.strftime('%Y-%m-%d') }}</div>
-        </div>
-        {% if g.user.id == post.author_id %}
-          <a class="action" href="{{ url_for('main.update', id=post.id) }}">Edit</a>
-        {% endif %}
-      </header>
-      <p class="body">{{ post.body }}</p>
-    </article>
-    {% if not loop.last %}
-      <hr>
+<div class="row">
+    <div class="col-md-8 blog-main">
+    {% for post in posts %}
+      <div class="blog-post">
+        <header>
+          <div>
+            <a class="blog-post-title" href="{{ url_for('main.page', id=post.id) }}">{{ post.title }}</a>
+            {% if g.user.id == post.author_id %}
+              <a class="action" href="{{ url_for('main.update', id=post.id) }}" style="float: right;">Edit</a>
+            {% endif %}
+            <p class="blog-post-meta">Created on {{ post.created.strftime('%Y-%m-%d') }}</p>
+          </div>
+        </header>
+        <!-- <p class="body">{{ post.body }}</p> -->
+      </div>
+      {% if not loop.last %}
+        <hr>
+      {% endif %}
+    {% endfor %}
+    {% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'main.index') }}
+    </div>
     {% endif %}
-  {% endfor %}
-  {% if pagination %}
-  <div class="pagination">
-      {{ macros.pagination_widget(pagination, 'main.index') }}
   </div>
-  {% endif %}
+</div>
 {% endblock %}
