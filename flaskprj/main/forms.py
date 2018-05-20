@@ -8,11 +8,13 @@ from ..models import User, Post
 
 class CreateForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
+    tags = StringField('Tags')
     body = TextAreaField('Body')
     submit = SubmitField('Save')
 
 class UpdateForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
+    tags = StringField('Tags')
     body = TextAreaField('Body')
     submit = SubmitField('Save')
 

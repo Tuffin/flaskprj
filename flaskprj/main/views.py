@@ -10,7 +10,7 @@ from flask_login import login_required
 
 from . import main
 from .forms import CreateForm, UpdateForm, ProfileEditForm
-from ..models import db, Post, User, Profile
+from ..models import db, Post, User, Profile, Tag
 
 @main.route('/')
 @main.route('/index')
@@ -19,9 +19,13 @@ def index():
     pagination = db.session.query(Post).order_by(Post.created.desc()).paginate(
         page, per_page=current_app.config['FLASKPRJ_POST_PER_PAGE'], error_out=False
     )
-
     posts = pagination.items
-    return render_template('blog/index.html', posts=posts, pagination=pagination)
+
+    recent_posts = db.session.query(Post).order_by(Post.created.desc()) \
+                    .limit(current_app.config['FLASKPRJ_RECENT_POST'])
+
+    return render_template('blog/index.html', posts=posts, pagination=pagination, 
+                        recent_posts=recent_posts)
 
 
 @main.route('/create', methods=('GET', 'POST'))
@@ -29,8 +33,16 @@ def index():
 def create():
     form = CreateForm()
     if form.validate_on_submit():
+        tag_list = list(set(form.tags.data.strip('; ').split(';')))[:5]
+
         post = Post(title=form.title.data, body=form.body.data, 
                     author_id=g.user.id, modified=False, created=datetime.datetime.now())
+        for tag in tag_list:
+            qtag = db.session.query(Tag).filter(Tag.name==tag).first()
+            if qtag:
+                post.add_tag(qtag)
+            else:
+                post.add_tag(Tag(name=tag))
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('main.index'))
@@ -53,10 +65,26 @@ def get_post(id, check_author=True):
 @main.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    post = db.session.query(Post).filter(Post.id == id).one()
+    post = db.session.query(Post).filter(Post.id == id).one_or_none()
+    if not post:
+        return redirect('main.index')
+    tag_list = post.tags
+
     form = UpdateForm()
 
     if form.validate_on_submit():
+        tag_list = list(set(form.tags.data.strip('; ').split(';')))[:5]
+        for tag in post.tags:
+            if tag.name not in tag_list:
+                post.remove_tag(tag)
+
+        for tag in tag_list:
+            qtag = db.session.query(Tag).filter(Tag.name==tag).first()
+            if qtag:
+                post.add_tag(qtag)
+            else:
+                post.add_tag(Tag(name=tag))
+
         modify_time = datetime.datetime.now()
         post.title = form.title.data
         post.body = form.body.data
@@ -67,6 +95,8 @@ def update(id):
 
     form.title.data = post.title
     form.body.data = post.body
+    if tag_list:
+        form.tags.data = ';'.join([tag.name for tag in tag_list])
 
     return render_template('blog/update.html', post=post, form=form)
 
@@ -83,18 +113,19 @@ def delete(id):
 
 def get_article(id):
     article = db.session.query(Post).filter(Post.id == id).one_or_none()
+    tags = article.tags
 
     if article is None:
         abort(404, "Article id {} doesn't exist".format(id))
     
-    return article
+    return article, tags
 
 
 @main.route('/article/<int:id>')
 def page(id):
-    article = get_article(id)
+    article, tags = get_article(id)
     
-    return render_template('blog/article_page.html', article=article)
+    return render_template('blog/article_page.html', article=article, tags=tags)
 
 
 @main.route('/profile/<string:username>')
@@ -125,3 +156,14 @@ def profile_edit(username):
         form.body = profile.Profile.body.data
 
     return render_template('blog/profile_edit.html', form=form)
+
+
+@main.route('/tag_<int:tag_id>')
+def posts_by_tag(tag_id):
+    tag = db.session.query(Tag).filter(Tag.id==tag_id).one_or_none()
+    if not tag:
+        return redirect('main.index')
+    tag_posts = tag.posts
+    tag_recent_posts = tag_posts.order_by(Post.created.desc()).limit(current_app.config['FLASKPRJ_RECENT_POST'])
+    
+    return render_template('blog/tag_post.html', tag=tag, tag_posts=tag_posts, tag_recent_posts=tag_recent_posts)

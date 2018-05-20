@@ -36,6 +36,12 @@ class User(db.Model):
         return '<User %s>' % self.username
 
 
+tag_post = db.Table('tag_post',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
+)
+
+
 class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -45,12 +51,29 @@ class Post(db.Model):
     body = db.Column(db.Text)
     modified = db.Column(db.Boolean, nullable=False, default=False)
     modify_time = db.Column(db.DateTime)
+    tags = db.relationship('Tag', secondary=tag_post, backref=db.backref('posts', lazy='dynamic'), lazy=True)
 
     def __init__(self, **kwargs):
         super(Post, self).__init__(**kwargs)
     
     def __repr__(self):
         return '<Post %s>' % self.title
+
+    def add_tag(self, tag):
+        if not self.has_tag(tag):
+            self.tags.append(tag)
+        return self
+
+    def remove_tag(self, tag):
+        if self.has_tag(tag):
+            self.tags.remove(tag)
+        return self
+    
+    def has_tag(self, tag):
+        if tag.id is None:
+            return False
+        # return self.tags.filter(tag_post.c.tag_id==tag.id).first() is not None
+        return tag in self.tags
 
 
 class Profile(db.Model):
@@ -63,4 +86,16 @@ class Profile(db.Model):
         super(Profile, self).__init__(**kwargs)
     
     def __repr__(self):
-        return '<Profile %s>' % self.title
+        return '<Profile %s>' % self.id
+
+
+class Tag(db.Model):
+    __tablename__ = 'tag'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+
+    def __init__(self, **kwargs):
+        super(Tag, self).__init__(**kwargs)
+    
+    def __repr__(self):
+        return '<Tag %s>' % self.name

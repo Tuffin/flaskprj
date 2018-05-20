@@ -7,9 +7,12 @@
 {% block content %}
   <form method="post">
     {{ form.hidden_tag() }}
-    {{ form.title.label }}{{ form.title }}<br>
+    {{ form.title.label }}<br>
+    {{ form.title }}<br>
+    {{ form.tags.label }}<br>
+    {{ form.tags }}<br>
     {{ form.body.label }}<br>
-    {{ form.body }}
+    {{ form.body }}<br>
     <input type="submit" value="Save">
   </form>
   <hr>

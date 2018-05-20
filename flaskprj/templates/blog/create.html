@@ -6,14 +6,17 @@
 {% endblock %}
 
 {% block content %}
-  <!-- <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
-    <input type="submit" value="Save">
-  </form> -->
-  <div class="col-md-4">
+  <form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.title.label }}<br>
+    {{ form.title }}<br>
+    {{ form.tags.label }}<br>
+    {{ form.tags }}(split with ";")<br>
+    {{ form.body.label }}<br>
+    {{ form.body }}<br>
+    <input type="submit" value="Submit">
+  </form>
+  <!-- <div class="col-md-4">
     {{ wtf.quick_form(form) }}
-  </div>
+  </div> -->
 {% endblock %}
