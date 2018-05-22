@@ -3,11 +3,12 @@ import os
 from .admin import BlogAdminIndexView, BlogModelView
 from .models import User, Post, Tag, db
 
+from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin import Admin
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
-from flask_babelex import Babel
 from flask_login import LoginManager
+from flask_babelex import Babel
 from config import config
 from flask import Flask
 
@@ -35,6 +36,8 @@ def create_app(config_name='development', test_config=None):
     admin.add_view(BlogModelView(User, db.session))
     admin.add_view(BlogModelView(Post, db.session))
     admin.add_view(BlogModelView(Tag, db.session))
+    file_path = os.path.join(os.path.dirname(__file__), 'static/img')
+    admin.add_view(FileAdmin(file_path, '/static/img/', name='图片文件'))
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
