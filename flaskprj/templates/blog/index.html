@@ -15,7 +15,7 @@
       <div class="blog-post">
         <header>
           <div>
-            <a class="blog-post-title" href="{{ url_for('main.page', id=post.id) }}">{{ post.title }}</a>
+            <a class="hvr-underline-reveal" href="{{ url_for('main.page', id=post.id) }}">{{ post.title }}</a>
             {% if g.user.id == post.author_id %}
               <a class="action" href="{{ url_for('main.update', id=post.id) }}" style="float: right;">Edit</a>
             {% endif %}
@@ -36,14 +36,31 @@
   </div>
   <aside class="col-md-4 blog-sidebar">
     <div class="p-3">
-      <h4 class="font-italic">Recent Posts</h4>
+      <!-- <h4  class="font-italic"> -->
+      <h4>
+          <span class="glyphicon glyphicon-time"></span>
+          &nbsp;最近文章
+      </h4>
       <ul class="list-unstyled mb-0">
       {% for rp in recent_posts %}
         <li>
-          <a href="{{ url_for('main.page', id=rp.id) }}">{{ rp.title }}</a>
+          <a class="recent-blog" href="{{ url_for('main.page', id=rp.id) }}">{{ rp.title }}</a>
         </li>
       {% endfor %}
       </ul>
+    </div>
+    <hr>
+    <div class='p-3'>
+      <h4>
+        <span class="glyphicon glyphicon-tags"></span>
+        &nbsp;标签
+        <div>
+        <br>
+        {% for tag in tags %}
+          <a class="hvr-fade" href="{{ url_for('main.posts_by_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
+        {% endfor %}
+        </div>
+      </h4>
     </div>
   </aside>
 </div>

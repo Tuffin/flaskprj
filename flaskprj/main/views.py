@@ -22,10 +22,12 @@ def index():
     posts = pagination.items
 
     recent_posts = db.session.query(Post).order_by(Post.created.desc()) \
-                    .limit(current_app.config['FLASKPRJ_RECENT_POST'])
+        .limit(current_app.config['FLASKPRJ_RECENT_POST'])
+    
+    tags = db.session.query(Tag).limit(current_app.config['TAG_RANDOM_NUM'])
 
     return render_template('blog/index.html', posts=posts, pagination=pagination, 
-                        recent_posts=recent_posts)
+                        recent_posts=recent_posts, tags=tags)
 
 
 @main.route('/create', methods=('GET', 'POST'))

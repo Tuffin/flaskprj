@@ -11,7 +11,7 @@
       <div>
         <div>Tags: 
           {% for tag in tags %}
-            <a href="{{ url_for('main.posts_by_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
+            <a class="hvr-fade" href="{{ url_for('main.posts_by_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
           {% endfor %}
         </div>
         <!-- <h1>{{ article['title'] }}</h1> -->

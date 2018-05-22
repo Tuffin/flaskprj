@@ -1,11 +1,18 @@
 import os
 
+from .admin import BlogAdminIndexView, BlogModelView
+from .models import User, Post, Tag, db
+
+from flask_admin import Admin
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
+from flask_babelex import Babel
 from flask_login import LoginManager
 from config import config
 from flask import Flask
 
+admin = Admin()
+babel = Babel()
 bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -19,8 +26,15 @@ def create_app(config_name='development', test_config=None):
     from flaskprj.models import db
     db.init_app(app)
 
+    babel.init_app(app)
+    app.config['BABEL_DEFAULT_LOCALE'] = 'zh_CN'
     bootstrap.init_app(app)
     login_manager.init_app(app)
+
+    admin.init_app(app, index_view=BlogAdminIndexView())
+    admin.add_view(BlogModelView(User, db.session))
+    admin.add_view(BlogModelView(Post, db.session))
+    admin.add_view(BlogModelView(Tag, db.session))
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

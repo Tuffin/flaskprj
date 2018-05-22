@@ -6,12 +6,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     SECRET_KEY = 'dev secret key'
-    FLASKPRJ_POST_PER_PAGE = 2
-    FLASKPRJ_RECENT_POST = 8
+    FLASKPRJ_POST_PER_PAGE = 11
+    FLASKPRJ_RECENT_POST = 7
     SSL_REDIRECT = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
+    TAG_RANDOM_NUM = 10
 
     @staticmethod
     def init_app(app):
