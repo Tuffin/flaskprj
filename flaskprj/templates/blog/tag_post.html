@@ -2,9 +2,11 @@
 {% import 'blog/_macros.html' as macros %}
 
 {% block header %}
-  <h1>{% block title %}
-      Article of Tag {{ tag.name }}
-      {% endblock %}</h1>
+  <h4>
+    <span class="glyphicon glyphicon-tag"></span>
+      {% block title %}
+      {{ tag.name }}
+      {% endblock %}</h4><br>
   {% if g.user %}
     <a class="action" href="{{ url_for('main.create') }}" style="float: right;">New</a>
   {% endif %}
@@ -14,21 +16,18 @@
 <div class="row">
     <div class="col-md-8 blog-main">
     {% for post in tag_posts %}
-      <div class="blog-post">
-        <header>
-          <div>
-            <a class="blog-post-title" href="{{ url_for('main.page', id=post.id) }}">{{ post.title }}</a>
-            {% if g.user.id == post.author_id %}
-              <a class="action" href="{{ url_for('main.update', id=post.id) }}" style="float: right;">Edit</a>
-            {% endif %}
-            <p class="blog-post-meta">Created on {{ post.created.strftime('%Y-%m-%d') }}</p>
-          </div>
-        </header>
-        <!-- <p class="body">{{ post.body }}</p> -->
-      </div>
-      {% if not loop.last %}
-        <hr>
-      {% endif %}
+        <a class="hvr-underline-reveal" href="{{ url_for('main.page', id=post.id) }}">
+            <div>
+                <h2 class="blog-post-title">{{ post.title }}</h2>
+                {% if g.user.id == post.author_id %}
+                    <a class="action" href="{{ url_for('main.update', id=post.id) }}" style="float: right;">Edit</a>
+                {% endif %}
+                <p class="blog-post-meta">Created on {{ post.created.strftime('%Y-%m-%d') }}</p>
+            </div>
+          </a>
+        {% if not loop.last %}
+          <hr>
+        {% endif %}
     {% endfor %}
     {% if pagination and tag_posts %}
     <div class="pagination">
@@ -38,14 +37,20 @@
   </div>
   <aside class="col-md-4 blog-sidebar">
     <div class="p-3">
-      <h4 class="font-italic">Recent {{ tag.name }} Posts</h4>
-      <ul class="list-unstyled mb-0">
-      {% for rp in tag_recent_posts %}
-        <li>
-          <a href="{{ url_for('main.page', id=rp.id) }}">{{ rp.title }}</a>
-        </li>
-      {% endfor %}
-      </ul>
+        <h4>
+            <span class="glyphicon glyphicon-time"></span>
+            &nbsp;最近文章
+        </h4>
+        <br>
+        <div class="list-group">
+            <ul>
+            {% for rp in tag_recent_posts %}
+                <li>
+                <a class="recent-blog" href="{{ url_for('main.page', id=rp.id) }}">{{ rp.title }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
     </div>
   </aside>
 </div>

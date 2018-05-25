@@ -1,8 +1,23 @@
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block header %}
-  <h1>{% block title %}New Post{% endblock %}</h1>
+{{ super() }}
+<script src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script type="text/javascript">
+  tinymce.init({ 
+    selector:'textarea',
+    language: 'zh_CN',
+    // plugins : 'advlist autolink link image lists charmap print preview',
+    plugins: [
+      'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+      'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+      'save table contextmenu directionality emoticons template paste textcolor'
+    ],
+    image_caption: true,
+    toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | print preview fullpage | forecolor backcolor emoticons',
+    height: 450,
+     });</script>
+<h1>{% block title %}New Post{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -13,10 +28,8 @@
     {{ form.tags.label }}<br>
     {{ form.tags }}(split with ";")<br>
     {{ form.body.label }}<br>
-    {{ form.body }}<br>
-    <input type="submit" value="Submit">
+    {{ form.body}}<br>
+    <button type="submit" class="ladda-button" data-style="zoom-out" data-color="blue" data-size="s">
+      <span class="ladda-label">发布</span></button>
   </form>
-  <!-- <div class="col-md-4">
-    {{ wtf.quick_form(form) }}
-  </div> -->
 {% endblock %}

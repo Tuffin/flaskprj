@@ -14,7 +14,7 @@
       {% endif %}
     </header>
     {% if profile.Profile %}
-        <p>{{ profile.Profile.body }}</p>
+        <p>{{ profile.Profile.body | safe }}</p>
     {% else %}
         <p>No profile now</p>
     {% endif %}

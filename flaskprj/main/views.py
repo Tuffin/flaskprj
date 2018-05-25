@@ -35,16 +35,17 @@ def index():
 def create():
     form = CreateForm()
     if form.validate_on_submit():
-        tag_list = list(set(form.tags.data.strip('; ').split(';')))[:5]
+        tag_list = map(lambda x: x.strip(), list(set(form.tags.data.strip('; ').split(';')))[:5])
 
         post = Post(title=form.title.data, body=form.body.data, 
                     author_id=g.user.id, modified=False, created=datetime.datetime.now())
         for tag in tag_list:
-            qtag = db.session.query(Tag).filter(Tag.name==tag).first()
-            if qtag:
-                post.add_tag(qtag)
-            else:
-                post.add_tag(Tag(name=tag))
+            if tag:
+                qtag = db.session.query(Tag).filter(Tag.name==tag).first()
+                if qtag:
+                    post.add_tag(qtag)
+                else:
+                    post.add_tag(Tag(name=tag))
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('main.index'))
@@ -75,17 +76,20 @@ def update(id):
     form = UpdateForm()
 
     if form.validate_on_submit():
-        tag_list = list(set(form.tags.data.strip('; ').split(';')))[:5]
+        tag_list = map(lambda x: x.strip(), list(set(form.tags.data.strip('; ').split(';')))[:5])
         for tag in post.tags:
             if tag.name not in tag_list:
                 post.remove_tag(tag)
+                if not tag.posts.count() > 0:
+                    db.session.delete(tag)
 
         for tag in tag_list:
-            qtag = db.session.query(Tag).filter(Tag.name==tag).first()
-            if qtag:
-                post.add_tag(qtag)
-            else:
-                post.add_tag(Tag(name=tag))
+            if tag:
+                qtag = db.session.query(Tag).filter(Tag.name==tag).first()
+                if qtag:
+                    post.add_tag(qtag)
+                else:
+                    post.add_tag(Tag(name=tag))
 
         modify_time = datetime.datetime.now()
         post.title = form.title.data
@@ -130,17 +134,25 @@ def page(id):
     return render_template('blog/article_page.html', article=article, tags=tags)
 
 
-@main.route('/profile/<string:username>')
-def profile(username):
+# @main.route('/profile/<string:username>')
+# def profile(username):
+#     profile = db.session.query(User, Profile).filter(
+#         and_(Profile.author_id==User.id, User.username==username)).first()
+
+#     return render_template('blog/profile.html', profile=profile, currnet_user=current_user)
+
+@main.route('/profile')
+def profile():
     profile = db.session.query(User, Profile).filter(
-        and_(Profile.author_id==User.id, User.username==username)).first()
+        and_(Profile.author_id==User.id, User.id==1)).first()
 
     return render_template('blog/profile.html', profile=profile, currnet_user=current_user)
 
 
-@main.route('/profile-edit/<string:username>', methods=['GET', 'POST'])
-def profile_edit(username):
-    user = db.session.query(User).filter(User.username==username).first()
+@main.route('/profile-edit', methods=['GET', 'POST'])
+@login_required
+def profile_edit():
+    user = db.session.query(User).filter(User.id==1).first()
     profile = db.session.query(Profile).filter(Profile.author_id==user.id).first()
     form = ProfileEditForm()
 
@@ -152,10 +164,10 @@ def profile_edit(username):
             profile.body = form.body.data
         db.session.commit()
 
-        return redirect(url_for('main.profile', username=username))
+        return redirect(url_for('main.profile'))
     
     if profile:
-        form.body = profile.Profile.body.data
+        form.body.data = profile.body
 
     return render_template('blog/profile_edit.html', form=form)
 

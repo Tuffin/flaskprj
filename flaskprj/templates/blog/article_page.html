@@ -9,11 +9,13 @@
 <article class="post">
     <header>
       <div>
+        {% if tags %}
         <div>Tags: 
           {% for tag in tags %}
             <a class="hvr-fade" href="{{ url_for('main.posts_by_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
           {% endfor %}
         </div>
+        {% endif %}
         <!-- <h1>{{ article['title'] }}</h1> -->
         <div class="blog-post-meta">Created on {{ article.created.strftime('%Y-%m-%d') }}</div>
       </div>
@@ -21,10 +23,10 @@
         <a class="action" href="{{ url_for('main.update', id=article.id) }}">Edit</a>
       {% endif %}
     </header>
-    <p>{{ article.body }}</p>
+    <p>{{ article.body | safe}}</p>
     {% if article.modified %}
     <div>
-      <div class="blog-post-meta">modified by {{ article.username }} on {{ article.modify_time.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+      <div class="blog-post-meta">Last modified on {{ article.modify_time.strftime('%Y-%m-%d %H:%M:%S') }}</div>
     </div>
     {% endif %}
 </article>

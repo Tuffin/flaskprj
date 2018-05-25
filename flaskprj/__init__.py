@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from .admin import BlogAdminIndexView, BlogModelView
 from .models import User, Post, Tag, db
@@ -24,6 +25,7 @@ def create_app(config_name='development', test_config=None):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
+    app.permanent_session_lifetime = datetime.timedelta(seconds=60 * 10)
     from flaskprj.models import db
     db.init_app(app)
 

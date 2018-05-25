@@ -1,7 +1,23 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Edit "{{ post.title }}"{% endblock %}</h1>
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script type="text/javascript">
+  tinymce.init({ 
+    selector:'textarea',
+    language: 'zh_CN',
+    // plugins : 'advlist autolink link image lists charmap print preview',
+    plugins: [
+      'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+      'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+      'save table contextmenu directionality emoticons template paste textcolor'
+    ],
+    image_caption: true,
+    toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | print preview fullpage | forecolor backcolor emoticons',
+    height: 450,
+     });</script>
+<h1>{% block title %}Edit "{{ post.title }}"{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -13,10 +29,12 @@
     {{ form.tags }}<br>
     {{ form.body.label }}<br>
     {{ form.body }}<br>
-    <input type="submit" value="Save">
+    <button type="submit" data-style="zoom-out" data-color="blue" class="ladda-button" data-size="s">
+      <span class="ladda-label">保存</span></button>
   </form>
   <hr>
   <form action="{{ url_for('main.delete', id=post.id) }}" method="post">
-    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+    <button type="submit" class="ladda-button" data-style="zoom-out" data-color="red" data-size="s" onclick="return confirm('Are you sure?');">
+      <span class="ladda-label">删除</span></button>
   </form>
 {% endblock %}

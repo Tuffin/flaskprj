@@ -35,6 +35,7 @@ def login():
         if user is not None or check_password_hash(user.password, form.password.data):
             login_user(user)
             session.clear()
+            session.permanent = True
             session['user_id'] = user.id
             return redirect(url_for('main.index'))
 
