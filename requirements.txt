@@ -1,0 +1,9 @@
+flask
+flask-admin
+flask-babelex
+flask-bootstrap
+flask-login
+flask-sqlalchemy
+flask-wtf
+sqlalchemy
+wtforms
