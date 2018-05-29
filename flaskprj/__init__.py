@@ -41,14 +41,6 @@ def create_app(config_name='development', test_config=None):
     file_path = os.path.join(os.path.dirname(__file__), 'static/img')
     admin.add_view(FileAdmin(file_path, '/static/img/', name='图片文件'))
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-
-    # ensure the instance folder exists
     try:
         if not app.instance_path:
             os.makedirs(app.instance_path)

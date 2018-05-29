@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
-    SECRET_KEY = 'dev secret key'
+    SECRET_KEY = os.getenv('SECRET_KEY') or 'gnirts_yek_terces'
     FLASKPRJ_POST_PER_PAGE = 8
     FLASKPRJ_RECENT_POST = 5
     SSL_REDIRECT = False
@@ -25,6 +25,12 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'instance/flaskprj-dev.sqlite')
 
 
+class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'instance/flaskprj.sqlite')
+
+
 config = {
-    'development': DevelopmentConfig
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
 }

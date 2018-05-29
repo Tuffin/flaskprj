@@ -12,8 +12,8 @@ app = create_app()
 app.app_context().push()
 db.create_all()
 
-sqluri = config['development'].SQLALCHEMY_DATABASE_URI
-sqlmr = config['development'].SQLALCHEMY_MIGRATE_REPO
+sqluri = config[os.getenv('FLASK_CONFIG') or 'default'].SQLALCHEMY_DATABASE_URI
+sqlmr = config[os.getenv('FLASK_CONFIG') or 'default'].SQLALCHEMY_MIGRATE_REPO
 
 if not os.path.exists(sqlmr):
     api.create(sqlmr, 'database_repository')
