@@ -22,11 +22,11 @@ bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 
-def create_app(config_name='development', test_config=None):
+def create_app():
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object(config[config_name])
-    config[config_name].init_app(app)
+    app.config.from_object(config[os.getenv('FLASK_CONFIG')])
+    config[os.getenv('FLASK_CONFIG')].init_app(app)
 
     app.permanent_session_lifetime = datetime.timedelta(seconds=60 * 10)
     from flaskprj.models import db
