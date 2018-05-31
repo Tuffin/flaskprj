@@ -16,3 +16,4 @@ build/
 db_repository/
 tests.py
 db_*.py
+fabfile.py
