@@ -58,3 +58,6 @@ def create_app():
     app.add_url_rule('/', endpoint='index')
 
     return app
+
+import flaskprj.auth.views
+import flaskprj.main.views

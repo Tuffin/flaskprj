@@ -12,6 +12,7 @@ from ..main import main
 from .. import login_manager
 from ..models import db, Post, User
 from .forms import LoginForm, RegistrationForm
+from flaskprj import create_app
 
 
 @auth.route('/register', methods=('GET', 'POST'))

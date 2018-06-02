@@ -11,6 +11,7 @@ from flask_login import login_required
 from . import main
 from .forms import CreateForm, UpdateForm, ProfileEditForm
 from ..models import db, Post, User, Profile, Tag
+from flaskprj import create_app
 
 @main.route('/')
 @main.route('/index')
