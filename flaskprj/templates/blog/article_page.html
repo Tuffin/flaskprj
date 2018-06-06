@@ -10,7 +10,7 @@
     <header>
       <div>
         {% if tags %}
-        <div><spa class="glyphicon glyphicon-tags"></spa>Tags: 
+        <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Tags: 
           {% for tag in tags %}
             <a class="hvr-fade" href="{{ url_for('main.posts_by_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
           {% endfor %}

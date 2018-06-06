@@ -145,7 +145,7 @@ def page(id):
 @main.route('/profile')
 def profile():
     profile = db.session.query(User, Profile).filter(
-        and_(Profile.author_id==User.id, User.id==1)).first()
+        and_(Profile.author_id==User.id, User.role_id==2)).first()
 
     return render_template('blog/profile.html', profile=profile, currnet_user=current_user)
 

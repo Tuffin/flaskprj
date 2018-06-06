@@ -69,7 +69,7 @@ class User(UserMixin, db.Model):
 
     @property
     def is_authenticated(self):
-        return self.role.name == 'Administrator'
+        return True
 
     @property
     def is_active(self):
@@ -78,6 +78,10 @@ class User(UserMixin, db.Model):
     @property
     def is_anonymous(self):
         return False
+
+    @property
+    def is_accessible(self):
+        return self.role.name == 'Administrator'
     
     def get_id(self):
         try:
