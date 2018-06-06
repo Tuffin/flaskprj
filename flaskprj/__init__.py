@@ -5,7 +5,7 @@ import os
 import datetime
 
 from .admin import BlogAdminIndexView, BlogModelView
-from .models import User, Post, Tag, db
+from .models import User, Post, Tag, Role, db
 
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin import Admin
@@ -13,6 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_babelex import Babel
+from sqlite3 import OperationalError
 from config import config
 from flask import Flask
 
@@ -27,6 +28,7 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config[os.getenv('FLASK_CONFIG')])
     config[os.getenv('FLASK_CONFIG')].init_app(app)
+    # Role.insert_roles()
 
     app.permanent_session_lifetime = datetime.timedelta(seconds=60 * 10)
     from flaskprj.models import db
@@ -58,6 +60,14 @@ def create_app():
     app.add_url_rule('/', endpoint='index')
 
     return app
+
+try:
+    app = create_app()
+    app.app_context().push()
+    Role.insert_roles()
+except OperationalError:
+    pass
+    
 
 import flaskprj.auth.views
 import flaskprj.main.views

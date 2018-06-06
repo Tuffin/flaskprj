@@ -1,19 +1,75 @@
 import datetime
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from flask import current_app
 
 db = SQLAlchemy()
 
-class User(db.Model):
+class Permission:
+    WRITE = 1
+    ADMIN = 2
+
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(64), unique=True)
+    # default = db.Column(db.Boolean, default=False, index=True)
+    permission = db.Column(db.Integer)
+    users = db.relationship('User', backref='role', lazy='dynamic')
+
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
+        if self.permission is None:
+            self.permission = 0
+
+    @staticmethod
+    def insert_roles():
+        roles = {
+            'User': [Permission.WRITE],
+            'Administrator': [Permission.WRITE, Permission.ADMIN]
+        }
+        for r in roles:
+            # role = Role.query.filter_by(name==r).first()
+            role = db.session.query(Role).filter(Role.name==r).first()
+            if not role:
+                role = Role(name=r)
+            role.reset_permission()
+            for perm in roles[r]:
+                role.add_permission(perm)
+            db.session.add(role)
+        db.session.commit()
+
+
+    def has_permission(self, perm):
+        return self.permission & perm == perm
+
+    def add_permission(self, perm):
+        if not self.has_permission(perm):
+            self.permission += perm
+
+    def rm_permission(self, perm):
+        if self.has_permission(perm):
+            self.permission -= perm
+
+    def reset_permission(self):        
+        self.permission = 0
+
+    def __repr__(self):
+        return '<Role %s>' % self.name
+
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable = False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     post = db.relationship('Post', backref='user', lazy=True)
 
     @property
     def is_authenticated(self):
-        return True
+        return self.role.name == 'Administrator'
 
     @property
     def is_active(self):
@@ -22,7 +78,7 @@ class User(db.Model):
     @property
     def is_anonymous(self):
         return False
-
+    
     def get_id(self):
         try:
             return unicode(self.id)  # python 2
@@ -31,6 +87,12 @@ class User(db.Model):
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
+        if self.role is None:
+            if self.username == current_app.config['FLASKPRJ_ADMIN']:
+                self.role = db.session.query(Role).filter(Role.name=='Administrator').first()
+                # self.role = Role.query.filter_by(name='Administrator').first()
+            if self.role is None:
+                self.role = db.session.query(Role).filter(Role.name=='User').first()
 
     def __repr__(self):
         return '<User %s>' % self.username

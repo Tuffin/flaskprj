@@ -8,6 +8,7 @@ class Config(object):
     SECRET_KEY = os.getenv('SECRET_KEY') or 'gnirts_yek_terces'
     FLASKPRJ_POST_PER_PAGE = 8
     FLASKPRJ_RECENT_POST = 5
+    FLASKPRJ_ADMIN = os.getenv('FLASKPRJ_ADMIN')
     SSL_REDIRECT = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')

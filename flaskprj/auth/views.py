@@ -10,7 +10,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from . import auth
 from ..main import main
 from .. import login_manager
-from ..models import db, Post, User
+from ..models import db, Post, User, Role
 from .forms import LoginForm, RegistrationForm
 from flaskprj import create_app
 
