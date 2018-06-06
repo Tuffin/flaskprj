@@ -13,6 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_babelex import Babel
+from sqlalchemy import engine
 from sqlite3 import OperationalError
 from config import config
 from flask import Flask
@@ -60,14 +61,6 @@ def create_app():
     app.add_url_rule('/', endpoint='index')
 
     return app
-
-try:
-    app = create_app()
-    app.app_context().push()
-    Role.insert_roles()
-except OperationalError:
-    pass
-    
 
 import flaskprj.auth.views
 import flaskprj.main.views
