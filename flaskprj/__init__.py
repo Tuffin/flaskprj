@@ -18,7 +18,7 @@ from sqlite3 import OperationalError
 from config import config
 from flask import Flask
 
-admin = Admin()
+# admin = Admin()
 babel = Babel()
 bootstrap = Bootstrap()
 login_manager = LoginManager()
@@ -40,13 +40,6 @@ def create_app():
     bootstrap.init_app(app)
     login_manager.init_app(app)
 
-    admin.init_app(app, index_view=BlogAdminIndexView())
-    admin.add_view(BlogModelView(User, db.session))
-    admin.add_view(BlogModelView(Post, db.session))
-    admin.add_view(BlogModelView(Tag, db.session))
-    file_path = os.path.join(os.path.dirname(__file__), 'static/img')
-    admin.add_view(FileAdmin(file_path, '/static/img/', name='图片文件'))
-
     try:
         if not app.instance_path:
             os.makedirs(app.instance_path)
@@ -59,6 +52,18 @@ def create_app():
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
     app.add_url_rule('/', endpoint='index')
+
+    # admin.init_app(app, index_view=BlogAdminIndexView())
+    admin = Admin(
+        app=app,
+        name='Admin',
+        index_view=BlogAdminIndexView()
+    )
+    admin.add_view(BlogModelView(model=User, session=db.session, endpoint='Users'))
+    admin.add_view(BlogModelView(model=Post, session=db.session, endpoint='Posts'))
+    admin.add_view(BlogModelView(model=Tag, session=db.session, endpoint='Tags'))
+    file_path = os.path.join(os.path.dirname(__file__), 'static/img')
+    admin.add_view(FileAdmin(file_path, '/static/img/', name='图片文件'))
 
     return app
 
