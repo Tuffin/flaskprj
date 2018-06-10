@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>{% block title %}{% endblock %} - Flaskprj</title>
+    <title>{% block title %}{% endblock %} - RiverofLife</title>
 
     <link rel="stylesheet" href="/static/css/lib/bootstrap.min.css">
     <link rel="stylesheet" href="/static/style.css">
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/lib/ladda.min.css">
 
-    <link rel="icon", href="/static/img/favicon.ico">
+    <link rel="icon", href="../static/img/favicon.ico">
 
   </head>
   
@@ -25,15 +25,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
             {% if g.user %}
-            <!-- <span class="text-muted">{{ g.user['username'] }}</span>
-              <p>&nbsp;&nbsp;</p> -->
             <li><a class="text-muted" href="{{ url_for('main.profile') }}">{{ g.user['username'] }}</a></li>
             <li><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('auth.logout') }}">Log Out</a></li>
             {% else %}
-            <!-- <li><a class="text-muted" href="{{ url_for('main.profile', username='usr1') }}">Profile</a></li> -->
             <li><a class="text-muted" href="{{ url_for('main.profile') }}">Profile</a></li>
-            <!-- <li><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('auth.register') }}">Register</a></li>
-            <li><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('auth.login') }}">Log In</a></li> -->
             {% endif %}
           </ul>
         </div>
@@ -45,7 +40,7 @@
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="site-heading">
-              <h1>Someone's Blog</h1>
+              <h1>River of Life</h1>
               <hr class="small">
               <span class="sub-heading">
                   <a class="blog-header-logo text-dark" href="{{ url_for('main.index') }}"><span class="glyphicon glyphicon-home"></span></a>
