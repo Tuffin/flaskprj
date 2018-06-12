@@ -31,7 +31,7 @@ def create_app():
     config[os.getenv('FLASK_CONFIG')].init_app(app)
     # Role.insert_roles()
 
-    app.permanent_session_lifetime = datetime.timedelta(seconds=60 * 10)
+    app.permanent_session_lifetime = datetime.timedelta(seconds=60 * 30)
     from flaskprj.models import db
     db.init_app(app)
 

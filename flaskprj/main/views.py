@@ -10,7 +10,7 @@ from flask_login import login_required
 
 from . import main
 from .forms import CreateForm, UpdateForm, ProfileEditForm
-from ..models import db, Post, User, Profile, Tag
+from ..models import db, Post, User, Profile, Tag, Role
 from flaskprj import create_app
 
 @main.route('/')
@@ -144,8 +144,9 @@ def page(id):
 
 @main.route('/profile')
 def profile():
+    admin_id = db.session.query(Role).filter(Role.name=='Administrator').first()
     profile = db.session.query(User, Profile).filter(
-        and_(Profile.author_id==User.id, User.role_id==2)).first()
+        and_(Profile.author_id==User.id, User.role_id==admin_id.id)).first()
 
     return render_template('blog/profile.html', profile=profile, currnet_user=current_user)
 
